@@ -1,0 +1,9 @@
+{
+  "entity": {
+    "sensor": {
+      "salt_level": {
+        "default": "mdi:shaker-outline"
+      }
+    }
+  }
+}

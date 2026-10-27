@@ -1,0 +1,90 @@
+# Home Assistant automation blueprint for Remon devices (SaltBuddy, Remon Waterontharder) added
+# to Home Assistant with this integration (see README.md, "Automation blueprint"). Import it in
+# Home Assistant under Settings > Automations & scenes > Blueprints > Import blueprint, or copy
+# this file to <config>/blueprints/automation/remon/ and reload automations.
+blueprint:
+  name: Remon salt level and leak alerts
+  description: >-
+    Sends a notification to a phone with the Home Assistant app when the salt level of a
+    Remon device drops below a threshold, and when the device detects a leak.
+  domain: automation
+  source_url: https://github.com/Senseble-B-V/remon-home-integration/blob/main/blueprints/automation/remon/salt_level_and_leak_alerts.yaml
+  homeassistant:
+    min_version: "2023.8.0"
+  input:
+    salt_level_entity:
+      name: Salt level
+      description: The "Salt level" sensor of the Remon device.
+      selector:
+        entity:
+          filter:
+            - integration: remon
+              domain: sensor
+    leak_entity:
+      name: Leak
+      description: The "Leak" sensor of the Remon device.
+      selector:
+        entity:
+          filter:
+            - integration: remon
+              domain: binary_sensor
+              device_class: moisture
+    threshold:
+      name: Salt level threshold
+      description: Notify when the salt level drops below this percentage.
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 99
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+    notify_device:
+      name: Phone to notify
+      description: A device running the Home Assistant companion app.
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+
+mode: queued
+
+variables:
+  threshold: !input threshold
+
+trigger:
+  # Fires once when the level crosses below the threshold, not again while it stays below.
+  # An unknown level (no salt sample yet, or salt sensor error) never fires.
+  - platform: numeric_state
+    entity_id: !input salt_level_entity
+    below: !input threshold
+    id: salt_low
+  # Also fires when the device comes back online while a leak is still present.
+  - platform: state
+    entity_id: !input leak_entity
+    to: "on"
+    id: leak
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: salt_low
+        sequence:
+          - domain: mobile_app
+            type: notify
+            device_id: !input notify_device
+            title: Salt level low
+            message: >-
+              {{ trigger.to_state.name }} is {{ trigger.to_state.state }}%
+              (below {{ threshold }}%). Time to add salt.
+      - conditions:
+          - condition: trigger
+            id: leak
+        sequence:
+          - domain: mobile_app
+            type: notify
+            device_id: !input notify_device
+            title: Leak detected
+            message: "{{ trigger.to_state.name }}: water detected at the device."

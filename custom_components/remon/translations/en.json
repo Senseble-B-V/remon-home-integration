@@ -1,0 +1,70 @@
+{
+  "config": {
+    "flow_title": "{name} ({host})",
+    "step": {
+      "user": {
+        "description": "Enter the address of a SaltBuddy or Remon Waterontharder on your network. Devices on the same network are usually found automatically.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP address or host name of the device, for example 192.168.1.42 or SaltBuddy-a1b2c3d4e5f6.local."
+        }
+      },
+      "discovery_confirm": {
+        "description": "Do you want to add the {name} at {host}?"
+      },
+      "reconfigure": {
+        "description": "Change the address of the device.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP address or host name of the device, for example 192.168.1.42 or SaltBuddy-a1b2c3d4e5f6.local."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect. Check that the device is on and connected to the same network as Home Assistant.",
+      "invalid_host": "Enter only an IP address or host name, without http:// or a port.",
+      "not_remon_device": "The device at this address is not a Remon device.",
+      "unsupported_api": "The device runs newer firmware than this integration supports. Update the Remon integration in HACS.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device is already configured",
+      "already_in_progress": "Configuration flow is already in progress",
+      "ipv6_not_supported": "IPv6 is not supported.",
+      "not_remon_device": "The discovered device is not a Remon device.",
+      "reconfigure_successful": "Re-configuration was successful",
+      "unsupported_api": "The device runs newer firmware than this integration supports. Update the Remon integration in HACS.",
+      "wrong_device": "A different Remon device answers at this address."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "leak": {
+        "name": "Leak"
+      },
+      "sensor_error": {
+        "name": "Salt sensor"
+      }
+    },
+    "sensor": {
+      "salt_level": {
+        "name": "Salt level"
+      }
+    }
+  },
+  "exceptions": {
+    "update_failed": {
+      "message": "Error reading the device at {host}: {error}"
+    },
+    "unsupported_api": {
+      "message": "The device speaks API version {api}, which this integration does not support yet. Update the Remon integration in HACS."
+    },
+    "wrong_device": {
+      "message": "Device {found} answers at {host} instead of {expected}. Waiting for discovery to find the new address."
+    }
+  }
+}

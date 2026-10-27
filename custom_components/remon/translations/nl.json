@@ -1,0 +1,70 @@
+{
+  "config": {
+    "flow_title": "{name} ({host})",
+    "step": {
+      "user": {
+        "description": "Vul het adres in van een SaltBuddy of Remon Waterontharder in je netwerk. Apparaten in hetzelfde netwerk worden meestal automatisch gevonden.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP-adres of hostnaam van het apparaat, bijvoorbeeld 192.168.1.42 of SaltBuddy-a1b2c3d4e5f6.local."
+        }
+      },
+      "discovery_confirm": {
+        "description": "Wil je de {name} op {host} toevoegen?"
+      },
+      "reconfigure": {
+        "description": "Wijzig het adres van het apparaat.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "IP-adres of hostnaam van het apparaat, bijvoorbeeld 192.168.1.42 of SaltBuddy-a1b2c3d4e5f6.local."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken. Controleer of het apparaat aan staat en met hetzelfde netwerk is verbonden als Home Assistant.",
+      "invalid_host": "Vul alleen een IP-adres of hostnaam in, zonder http:// of poort.",
+      "not_remon_device": "Het apparaat op dit adres is geen Remon-apparaat.",
+      "unsupported_api": "Het apparaat draait nieuwere firmware dan deze integratie ondersteunt. Werk de Remon-integratie bij in HACS.",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "already_configured": "Apparaat is al geconfigureerd",
+      "already_in_progress": "De configuratie is al bezig",
+      "ipv6_not_supported": "IPv6 wordt niet ondersteund.",
+      "not_remon_device": "Het gevonden apparaat is geen Remon-apparaat.",
+      "reconfigure_successful": "Herconfiguratie was succesvol",
+      "unsupported_api": "Het apparaat draait nieuwere firmware dan deze integratie ondersteunt. Werk de Remon-integratie bij in HACS.",
+      "wrong_device": "Op dit adres antwoordt een ander Remon-apparaat."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "leak": {
+        "name": "Lekkage"
+      },
+      "sensor_error": {
+        "name": "Zoutsensor"
+      }
+    },
+    "sensor": {
+      "salt_level": {
+        "name": "Zoutniveau"
+      }
+    }
+  },
+  "exceptions": {
+    "update_failed": {
+      "message": "Fout bij het uitlezen van het apparaat op {host}: {error}"
+    },
+    "unsupported_api": {
+      "message": "Het apparaat spreekt API-versie {api}, die deze integratie nog niet ondersteunt. Werk de Remon-integratie bij in HACS."
+    },
+    "wrong_device": {
+      "message": "Op {host} antwoordt apparaat {found} in plaats van {expected}. Wachten tot het nieuwe adres wordt gevonden."
+    }
+  }
+}

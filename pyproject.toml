@@ -1,0 +1,85 @@
+# Development tooling only. Nothing here is built or published: users install the Remon
+# integration through HACS, which copies custom_components/remon/ into Home Assistant. The
+# remon_home_integration client package lives inside that folder for the same reason.
+
+[project]
+name = "remon_home_integration"
+version = "0.0.0" # unused; the integration version is in custom_components/remon/manifest.json
+description = "Remon salt level monitor integration for Home Assistant (HACS)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+    # Both ship with Home Assistant, so the integration manifest needs no requirements.
+    "aiohttp>=3.9",
+    "yarl>=1.9",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pytest>=8",
+    "pytest-aiohttp>=1.0.5",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5",
+    "pytest-homeassistant-custom-component>=0.13.375 ; python_full_version >= '3.14.2'",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+# Import the client as a top-level package, without custom_components/remon/__init__.py (which
+# imports homeassistant).
+pythonpath = ["custom_components/remon"]
+# Home Assistant's test plugin blocks sockets, which the client tests need. The tests_ha session
+# turns it back on by overriding addopts (see README.md, "Develop").
+addopts = "--strict-markers -p no:homeassistant"
+
+[tool.coverage.run]
+source = ["remon_home_integration"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = "custom_components/remon"
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["pytest_homeassistant_custom_component.*"]
+ignore_missing_imports = true
+
+# Home Assistant 2026.9 moved BinarySensorDeviceClass to binary_sensor.const and re-exports it
+# without __all__; importing it from the package works on every supported version.
+[[tool.mypy.overrides]]
+module = ["homeassistant.components.binary_sensor"]
+implicit_reexport = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "ASYNC", "PT", "N", "C4", "PL", "TRY", "D"]
+ignore = [
+    "D203",    # one-blank-line-before-class: conflicts with D211
+    "D213",    # multi-line-summary-second-line: conflicts with D212
+    "PLR2004", # magic values are fine in tests and range checks
+    "TRY003",  # long messages in exception constructors are the point
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components", "remon_home_integration"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "PLR0913", "S101"]
+"tests_ha/*" = ["D", "PLR0913", "S101"]

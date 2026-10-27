@@ -1,0 +1,10 @@
+# Coverage of the Home Assistant session: the integration modules only. The bundled client is
+# measured by the client tests in tests/ (pyproject.toml).
+[run]
+source = custom_components/remon
+omit = */custom_components/remon/remon_home_integration/*
+branch = True
+
+[report]
+show_missing = True
+fail_under = 100

@@ -1,0 +1,19 @@
+{
+  "domain": "remon",
+  "name": "Remon",
+  "codeowners": ["@Senseble-B-V"],
+  "config_flow": true,
+  "dhcp": [
+    { "hostname": "saltbuddy-*" },
+    { "hostname": "softener-*" },
+    { "hostname": "softenerdf-*" },
+    { "registered_devices": true }
+  ],
+  "documentation": "https://github.com/Senseble-B-V/remon-home-integration",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Senseble-B-V/remon-home-integration/issues",
+  "requirements": [],
+  "version": "0.1.0",
+  "zeroconf": ["_saltlevel._tcp.local."]
+}
